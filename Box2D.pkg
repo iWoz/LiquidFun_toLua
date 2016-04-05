@@ -1,0 +1,129 @@
+/*
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
+*
+* This software is provided 'as-is', without any express or implied
+* warranty.  In no event will the authors be held liable for any damages
+* arising from the use of this software.
+* Permission is granted to anyone to use this software for any purpose,
+* including commercial applications, and to alter it and redistribute it
+* freely, subject to the following restrictions:
+* 1. The origin of this software must not be misrepresented; you must not
+* claim that you wrote the original software. If you use this software
+* in a product, an acknowledgment in the product documentation would be
+* appreciated but is not required.
+* 2. Altered source versions must be plainly marked as such, and must not be
+* misrepresented as being the original software.
+* 3. This notice may not be removed or altered from any source distribution.
+*/
+
+/*
+    1) enum keeps the same
+    2) remove CC_DLL for the class defines, pay attention to multi inherites
+    3) remove inline keyword for declaration and implementation
+    4) remove public protect and private
+    5) remove the decalration of class member variable
+    6) keep static keyword
+    7) remove memeber functions that declared as private or protected
+ */
+
+
+/**
+\mainpage Box2D API Documentation
+
+\section intro_sec Getting Started
+
+For documentation please see http://box2d.org/documentation.html
+
+For discussion please visit http://box2d.org/forum
+*/
+
+$#include "Box2D/Box2D.h"
+
+$#include <Box2D/Dynamics/Contacts/b2Contact.h>
+$#include <Box2D/Dynamics/Contacts/b2CircleContact.h>
+$#include <Box2D/Dynamics/Contacts/b2PolygonAndCircleContact.h>
+$#include <Box2D/Dynamics/Contacts/b2PolygonContact.h>
+$#include <Box2D/Dynamics/Contacts/b2EdgeAndCircleContact.h>
+$#include <Box2D/Dynamics/Contacts/b2EdgeAndPolygonContact.h>
+$#include <Box2D/Dynamics/Contacts/b2ChainAndCircleContact.h>
+$#include <Box2D/Dynamics/Contacts/b2ChainAndPolygonContact.h>
+$#include <Box2D/Dynamics/Contacts/b2ContactSolver.h>
+
+$#include <Box2D/Collision/b2Collision.h>
+$#include <Box2D/Collision/b2TimeOfImpact.h>
+$#include <Box2D/Collision/Shapes/b2Shape.h>
+$#include <Box2D/Common/b2BlockAllocator.h>
+$#include <Box2D/Dynamics/b2Body.h>
+$#include <Box2D/Dynamics/b2Fixture.h>
+$#include <Box2D/Dynamics/b2World.h>
+
+$#include <Box2D/Dynamics/b2Island.h>
+$#include <Box2D/Dynamics/Joints/b2PulleyJoint.h>
+$#include <Box2D/Dynamics/Contacts/b2Contact.h>
+$#include <Box2D/Dynamics/Contacts/b2ContactSolver.h>
+$#include <Box2D/Collision/b2BroadPhase.h>
+$#include <Box2D/Collision/Shapes/b2CircleShape.h>
+$#include <Box2D/Collision/Shapes/b2EdgeShape.h>
+$#include <Box2D/Collision/Shapes/b2ChainShape.h>
+$#include <Box2D/Collision/Shapes/b2PolygonShape.h>
+
+$#include <Box2D/Rope/b2Rope.h>
+
+$#include <Box2D/Particle/b2ParticleSystem.h>
+$#include <Box2D/Particle/b2ParticleGroup.h>
+$#include <Box2D/Particle/b2Particle.h>
+
+
+$#include "tolua_Box2D_auto.h"
+
+// These include files constitute the main Box2D API
+
+$pfile "b2BlockAllocator.pkg"
+$pfile "b2Body.pkg"
+$pfile "b2BroadPhase.pkg"
+$pfile "b2ChainAndCircleContact.pkg"
+$pfile "b2ChainAndPolygonContact.pkg"
+$pfile "b2ChainShape.pkg"
+$pfile "b2CircleContact.pkg"
+$pfile "b2CircleShape.pkg"
+$pfile "b2Collision.pkg"
+$pfile "b2Contact.pkg"
+$pfile "b2ContactManager.pkg"
+$pfile "b2ContactSolver.pkg"
+$pfile "b2Distance.pkg"
+$pfile "b2DistanceJoint.pkg"
+$pfile "b2Draw.pkg"
+$pfile "b2DynamicTree.pkg"
+$pfile "b2EdgeAndCircleContact.pkg"
+$pfile "b2EdgeAndPolygonContact.pkg"
+$pfile "b2EdgeShape.pkg"
+$pfile "b2Fixture.pkg"
+$pfile "b2FrictionJoint.pkg"
+$pfile "b2GearJoint.pkg"
+$pfile "b2GrowableStack.pkg"
+$pfile "b2Island.pkg"
+$pfile "b2Joint.pkg"
+$pfile "b2Math.pkg"
+$pfile "b2MouseJoint.pkg"
+$pfile "b2PolygonAndCircleContact.pkg"
+$pfile "b2PolygonContact.pkg"
+$pfile "b2PolygonShape.pkg"
+$pfile "b2PrismaticJoint.pkg"
+$pfile "b2PulleyJoint.pkg"
+$pfile "b2RevoluteJoint.pkg"
+$pfile "b2Rope.pkg"
+$pfile "b2RopeJoint.pkg"
+$pfile "b2Settings.pkg"
+$pfile "b2Shape.pkg"
+$pfile "b2StackAllocator.pkg"
+$pfile "b2TimeOfImpact.pkg"
+$pfile "b2Timer.pkg"
+$pfile "b2TimeStep.pkg"
+$pfile "b2WeldJoint.pkg"
+$pfile "b2WheelJoint.pkg"
+$pfile "b2World.pkg"
+$pfile "b2WorldCallbacks.pkg"
+$pfile "b2ParticleSystem.pkg"
+$pfile "b2ParticleGroup.pkg"
+$pfile "b2Particle.pkg"
+

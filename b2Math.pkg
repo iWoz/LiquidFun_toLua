@@ -1,0 +1,262 @@
+/*
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
+*
+* This software is provided 'as-is', without any express or implied
+* warranty.  In no event will the authors be held liable for any damages
+* arising from the use of this software.
+* Permission is granted to anyone to use this software for any purpose,
+* including commercial applications, and to alter it and redistribute it
+* freely, subject to the following restrictions:
+* 1. The origin of this software must not be misrepresented; you must not
+* claim that you wrote the original software. If you use this software
+* in a product, an acknowledgment in the product documentation would be
+* appreciated but is not required.
+* 2. Altered source versions must be plainly marked as such, and must not be
+* misrepresented as being the original software.
+* 3. This notice may not be removed or altered from any source distribution.
+*/
+
+
+#include <Box2D/Common/b2Settings.h>
+
+#include <cmath>
+#ifndef SHP
+#include <cfloat>
+#else
+#include <float.h>
+#endif
+#include <cstddef>
+#include <limits>
+
+//using namespace std;
+
+
+/// A 2D column vector.
+struct b2Vec2
+{
+    /// Default constructor does nothing (for performance).
+    b2Vec2() ;
+
+    /// Construct using coordinates.
+    b2Vec2(float32 x, float32 y);
+
+    /// Set this vector to all zeros.
+    void SetZero();
+
+    /// Set this vector to some specified coordinates.
+    void Set(float32 x_, float32 y_);
+
+	/*
+    /// Negate this vector.
+    b2Vec2 operator -() const ;
+    
+    /// Read from and indexed element.
+    float32 operator () (int32 i);
+
+    /// Write to an indexed element.
+    float32& operator () (int32 i);
+
+
+    /// Add a vector to this vector.
+    void operator += (const b2Vec2& v);
+    
+    /// Subtract a vector from this vector.
+    void operator -= (const b2Vec2& v);
+
+    /// Multiply this vector by a scalar.
+    void operator *= (float32 a);
+	*/
+
+    /// Get the length of this vector (the norm).
+    float32 Length();
+
+    /// Get the length squared. For performance, use this instead of
+    /// b2Vec2::Length (if possible).
+    float32 LengthSquared();
+
+    /// Convert this vector into a unit vector. Returns the length.
+    float32 Normalize();
+
+    /// Does this vector contain finite coordinates?
+    bool IsValid();
+
+    /// Get the skew vector such that dot(skew_vec, other) == cross(vec, other)
+    b2Vec2 Skew();
+
+    float32 x, y;
+};
+
+/// A 2D column vector with 3 elements.
+struct b2Vec3
+{
+    /// Default constructor does nothing (for performance).
+    b2Vec3() ;
+
+    /// Construct using coordinates.
+    b2Vec3(float32 x, float32 y, float32 z);
+
+    /// Set this vector to all zeros.
+    void SetZero();
+
+    /// Set this vector to some specified coordinates.
+    void Set(float32 x_, float32 y_, float32 z_);
+
+	/*
+    /// Negate this vector.
+    b2Vec3 operator -() const ;
+
+    /// Add a vector to this vector.
+    void operator += (const b2Vec3& v);
+
+    /// Subtract a vector from this vector.
+    void operator -= (const b2Vec3& v);
+
+    /// Multiply this vector by a scalar.
+    void operator *= (float32 s);
+	*/
+
+    float32 x, y, z;
+};
+
+/// A 2-by-2 matrix. Stored in column-major order.
+struct b2Mat22
+{
+    /// The default constructor does nothing (for performance).
+    b2Mat22();
+
+    /// Construct this matrix using columns.
+    b2Mat22(const b2Vec2& c1, const b2Vec2& c2);
+
+    /// Construct this matrix using scalars.
+    b2Mat22(float32 a11, float32 a12, float32 a21, float32 a22);
+
+    /// Initialize this matrix using columns.
+    void Set(const b2Vec2& c1, const b2Vec2& c2);
+
+    /// Set this to the identity matrix.
+    void SetIdentity();
+
+    /// Set this matrix to all zeros.
+    void SetZero();
+
+    b2Mat22 GetInverse();
+
+    /// Solve A * x = b, where b is a column vector. This is more efficient
+    /// than computing the inverse in one-shot cases.
+    b2Vec2 Solve(const b2Vec2& b);
+
+    b2Vec2 ex, ey;
+};
+
+/// A 3-by-3 matrix. Stored in column-major order.
+struct b2Mat33
+{
+    /// The default constructor does nothing (for performance).
+    b2Mat33() ;
+
+    /// Construct this matrix using columns.
+    b2Mat33(const b2Vec3& c1, const b2Vec3& c2, const b2Vec3& c3);
+
+    /// Set this matrix to all zeros.
+    void SetZero();
+
+    /// Solve A * x = b, where b is a column vector. This is more efficient
+    /// than computing the inverse in one-shot cases.
+    b2Vec3 Solve33(const b2Vec3& b);
+
+    /// Solve A * x = b, where b is a column vector. This is more efficient
+    /// than computing the inverse in one-shot cases. Solve only the upper
+    /// 2-by-2 matrix equation.
+    b2Vec2 Solve22(const b2Vec2& b);
+
+    /// Get the inverse of this matrix as a 2-by-2.
+    /// Returns the zero matrix if singular.
+    void GetInverse22(b2Mat33* M);
+
+    /// Get the symmetric inverse of this matrix as a 3-by-3.
+    /// Returns the zero matrix if singular.
+    void GetSymInverse33(b2Mat33* M);
+
+    b2Vec3 ex, ey, ez;
+};
+
+
+
+/// This describes the motion of a body/shape for TOI computation.
+/// Shapes are defined with respect to the body origin, which may
+/// no coincide with the center of mass. However, to support dynamics
+/// we must interpolate the center of mass position.
+struct b2Sweep
+{
+    /// Get the interpolated transform at a specific time.
+    /// @param beta is a factor in [0,1], where 0 indicates alpha0.
+    void GetTransform(b2Transform* xfb, float32 beta);
+
+    /// Advance the sweep forward, yielding a new initial state.
+    /// @param alpha the new initial time.
+    void Advance(float32 alpha);
+
+    /// Normalize the angles.
+    void Normalize();
+
+    b2Vec2 localCenter;    ///< local center of mass position
+    b2Vec2 c0, c;        ///< center world positions
+    float32 a0, a;        ///< world angles
+
+    /// Fraction of the current time step in the range [0,1]
+    /// c0 and a0 are the positions at alpha0.
+    float32 alpha0;
+};
+
+
+
+
+
+/// A transform contains translation and rotation. It is used to represent
+/// the position and orientation of rigid frames.
+struct b2Transform
+{
+    /// The default constructor does nothing.
+    b2Transform();
+
+    /// Initialize using a position vector and a rotation.
+    b2Transform(const b2Vec2& position, const b2Rot& rotation);
+
+    /// Set this to the identity transform.
+    void SetIdentity();
+
+    /// Set this based on the position and angle.
+    void Set(const b2Vec2& position, float32 angle);
+
+    b2Vec2 p;
+    b2Rot q;
+};
+
+
+
+/// Rotation
+struct b2Rot
+{
+    b2Rot();
+
+    /// Initialize from an angle in radians
+    explicit b2Rot(float32 angle);
+
+    /// Set using an angle in radians.
+    void Set(float32 angle);
+
+    /// Set to the identity rotation
+    void SetIdentity();
+
+    /// Get the angle in radians
+    float32 GetAngle();
+
+    /// Get the x-axis
+    b2Vec2 GetXAxis();
+
+    /// Get the u-axis
+    b2Vec2 GetYAxis();
+
+    /// Sine and cosine
+    float32 s, c;
+};

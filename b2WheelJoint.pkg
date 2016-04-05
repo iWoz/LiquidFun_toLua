@@ -1,0 +1,124 @@
+/*
+* Copyright (c) 2006-2011 Erin Catto http://www.box2d.org
+*
+* This software is provided 'as-is', without any express or implied
+* warranty.  In no event will the authors be held liable for any damages
+* arising from the use of this software.
+* Permission is granted to anyone to use this software for any purpose,
+* including commercial applications, and to alter it and redistribute it
+* freely, subject to the following restrictions:
+* 1. The origin of this software must not be misrepresented; you must not
+* claim that you wrote the original software. If you use this software
+* in a product, an acknowledgment in the product documentation would be
+* appreciated but is not required.
+* 2. Altered source versions must be plainly marked as such, and must not be
+* misrepresented as being the original software.
+* 3. This notice may not be removed or altered from any source distribution.
+*/
+
+
+
+#include <Box2D/Dynamics/Joints/b2Joint.h>
+
+/// Wheel joint definition. This requires defining a line of
+/// motion using an axis and an anchor point. The definition uses local
+/// anchor points and a local axis so that the initial configuration
+/// can violate the constraint slightly. The joint translation is zero
+/// when the local anchor points coincide in world space. Using local
+/// anchors and a local axis helps when saving and loading a game.
+struct b2WheelJointDef : public b2JointDef
+{
+    b2WheelJointDef();
+
+    /// Initialize the bodies, anchors, axis, and reference angle using the world
+    /// anchor and world axis.
+    void Initialize(b2Body* bodyA, b2Body* bodyB, const b2Vec2& anchor, const b2Vec2& axis);
+
+    /// The local anchor point relative to bodyA's origin.
+    b2Vec2 localAnchorA;
+
+    /// The local anchor point relative to bodyB's origin.
+    b2Vec2 localAnchorB;
+
+    /// The local translation axis in bodyA.
+    b2Vec2 localAxisA;
+
+    /// Enable/disable the joint motor.
+    bool enableMotor;
+
+    /// The maximum motor torque, usually in N-m.
+    float32 maxMotorTorque;
+
+    /// The desired motor speed in radians per second.
+    float32 motorSpeed;
+
+    /// Suspension frequency, zero indicates no suspension
+    float32 frequencyHz;
+
+    /// Suspension damping ratio, one indicates critical damping
+    float32 dampingRatio;
+};
+
+/// A wheel joint. This joint provides two degrees of freedom: translation
+/// along an axis fixed in bodyA and rotation in the plane. You can use a
+/// joint limit to restrict the range of motion and a joint motor to drive
+/// the rotation or to model rotational friction.
+/// This joint is designed for vehicle suspensions.
+class b2WheelJoint : public b2Joint
+{
+public:
+ //   void GetDefinition(b2WheelJointDef* def);
+
+    b2Vec2 GetAnchorA();
+    b2Vec2 GetAnchorB();
+
+    b2Vec2 GetReactionForce(float32 inv_dt);
+    float32 GetReactionTorque(float32 inv_dt);
+
+    /// The local anchor point relative to bodyA's origin.
+    const b2Vec2& GetLocalAnchorA();
+
+    /// The local anchor point relative to bodyB's origin.
+    const b2Vec2& GetLocalAnchorB() const  ;
+
+    /// The local joint axis relative to bodyA.
+    const b2Vec2& GetLocalAxisA() const ;
+
+    /// Get the current joint translation, usually in meters.
+    float32 GetJointTranslation();
+
+    /// Get the current joint translation speed, usually in meters per second.
+    float32 GetJointSpeed();
+
+    /// Is the joint motor enabled?
+    bool IsMotorEnabled();
+
+    /// Enable/disable the joint motor.
+    void EnableMotor(bool flag);
+
+    /// Set the motor speed, usually in radians per second.
+    void SetMotorSpeed(float32 speed);
+
+    /// Get the motor speed, usually in radians per second.
+    float32 GetMotorSpeed();
+
+    /// Set/Get the maximum motor force, usually in N-m.
+    void SetMaxMotorTorque(float32 torque);
+    float32 GetMaxMotorTorque();
+
+    /// Get the current motor torque given the inverse time step, usually in N-m.
+    float32 GetMotorTorque(float32 inv_dt);
+
+    /// Set/Get the spring frequency in hertz. Setting the frequency to zero disables the spring.
+    void SetSpringFrequencyHz(float32 hz);
+    float32 GetSpringFrequencyHz();
+
+    /// Set/Get the spring damping ratio
+    void SetSpringDampingRatio(float32 ratio);
+    float32 GetSpringDampingRatio();
+
+    /// Dump to b2Log
+    void Dump();
+
+};
+

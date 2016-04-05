@@ -1,0 +1,1 @@
+tolua++ -o tolua_Box2D_auto.cpp Box2D.pkg 
